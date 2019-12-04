@@ -1,0 +1,52 @@
+namespace Goruntu
+{
+    public partial class Form1 : Form
+    {
+        Image<Gray, byte> imgBinarize;
+        private bool capture_in_progress = true;
+        private Capture capture;
+        
+        public Form1()
+        {
+            this.InitializeComponent();
+            try
+            {
+                capture = new Emgu.CV.Capture(1);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message);
+            }
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            using (Image<Gray, byte> nextFrame = capture.QueryFrame().ToImage<Gray, byte>())
+            {
+                if (nextFrame != null && capture_in_progress == true)
+                {
+
+
+                    imgBinarize = new Image<Gray, Byte>(nextFrame.Width, nextFrame.Height, new Gray(0));
+                    CvInvoke.Threshold(nextFrame, imgBinarize,90,255, Emgu.CV.CvEnum.ThresholdType.Binary);
+                    pictureBox1.Image = imgBinarize.Bitmap;
+                    
+                }
+            }
+           
+        } 
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
